@@ -2,6 +2,7 @@ package daysteps
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -17,7 +18,7 @@ const (
 )
 
 func parsePackage(data string) (int, time.Duration, error) {
-	splitData := strings.Split(data, ",") // ИЗМЕНИТЬ на запятую
+	splitData := strings.Split(data, ",")
 	if len(splitData) != 2 {
 		return 0, 0, fmt.Errorf("некорректный формат данных")
 	}
@@ -27,9 +28,17 @@ func parsePackage(data string) (int, time.Duration, error) {
 		return 0, 0, fmt.Errorf("некорректное количество шагов")
 	}
 
+	if intData <= 0 {
+		return 0, 0, fmt.Errorf("количество шагов должно быть положительным")
+	}
+
 	duration, err := time.ParseDuration(strings.TrimSpace(splitData[1]))
 	if err != nil {
 		return 0, 0, fmt.Errorf("некорректная длительность")
+	}
+
+	if duration <= 0 {
+		return 0, 0, fmt.Errorf("длительность должна быть положительной")
 	}
 
 	return intData, duration, nil
@@ -38,6 +47,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 func DayActionInfo(data string, weight, height float64) string {
 	steps, duration, err := parsePackage(data)
 	if err != nil {
+		log.Println(err)
 		return ""
 	}
 
