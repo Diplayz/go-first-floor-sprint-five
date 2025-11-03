@@ -23,7 +23,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 		return 0, "", 0, fmt.Errorf("некорректный формат данных")
 	}
 
-	steps, err := strconv.Atoi(strings.TrimSpace(splitData[0]))
+	steps, err := strconv.Atoi(splitData[0])
 	if err != nil {
 		return 0, "", 0, fmt.Errorf("ошибка при преобразовании количества шагов: %v", err)
 	}
@@ -32,9 +32,9 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 		return 0, "", 0, fmt.Errorf("количество шагов должно быть положительным")
 	}
 
-	activity := strings.TrimSpace(splitData[1])
+	activity := splitData[1]
 
-	duration, err := time.ParseDuration(strings.TrimSpace(splitData[2]))
+	duration, err := time.ParseDuration(splitData[2])
 	if err != nil {
 		return 0, "", 0, fmt.Errorf("ошибка при преобразовании строки в duration: %v", err)
 	}
