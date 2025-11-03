@@ -18,15 +18,24 @@ const (
 )
 
 func parsePackage(data string) (int, time.Duration, error) {
-	splitData := strings.Split(data, " ")
-	if len(splitData) != 2 {
-		return 0, 0, fmt.Errorf("некорректный формат данных")
-	}
+	var stepsStr, durationStr string
 
-	stepsStr := splitData[0]
-	durationStr := splitData[1]
+	switch {
+	case strings.Contains(data, ","):
+		splitData := strings.Split(data, ",")
+		if len(splitData) != 2 {
+			return 0, 0, fmt.Errorf("некорректный формат данных")
+		}
+		stepsStr, durationStr = splitData[0], splitData[1]
 
-	if strings.Contains(stepsStr, " ") || strings.Contains(durationStr, " ") {
+	case strings.Contains(data, " "):
+		splitData := strings.Split(data, " ")
+		if len(splitData) != 2 {
+			return 0, 0, fmt.Errorf("некорректный формат данных")
+		}
+		stepsStr, durationStr = splitData[0], splitData[1]
+
+	default:
 		return 0, 0, fmt.Errorf("некорректный формат данных")
 	}
 
