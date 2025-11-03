@@ -18,12 +18,19 @@ const (
 )
 
 func parsePackage(data string) (int, time.Duration, error) {
-	splitData := strings.Split(data, ",")
+	splitData := strings.Split(data, " ")
 	if len(splitData) != 2 {
 		return 0, 0, fmt.Errorf("некорректный формат данных")
 	}
 
-	intData, err := strconv.Atoi(strings.TrimSpace(splitData[0]))
+	stepsStr := splitData[0]
+	durationStr := splitData[1]
+
+	if strings.Contains(stepsStr, " ") || strings.Contains(durationStr, " ") {
+		return 0, 0, fmt.Errorf("некорректный формат данных")
+	}
+
+	intData, err := strconv.Atoi(stepsStr)
 	if err != nil {
 		return 0, 0, fmt.Errorf("некорректное количество шагов")
 	}
@@ -32,7 +39,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 		return 0, 0, fmt.Errorf("количество шагов должно быть положительным")
 	}
 
-	duration, err := time.ParseDuration(strings.TrimSpace(splitData[1]))
+	duration, err := time.ParseDuration(durationStr)
 	if err != nil {
 		return 0, 0, fmt.Errorf("некорректная длительность")
 	}
