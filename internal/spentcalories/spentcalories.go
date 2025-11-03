@@ -20,26 +20,32 @@ const (
 func parseTraining(data string) (int, string, time.Duration, error) {
 	splitData := strings.Split(data, ",")
 	if len(splitData) != 3 {
-		return 0, "", 0, fmt.Errorf("")
+		return 0, "", 0, fmt.Errorf("некорректный формат данных")
 	}
 
-	steps, err := strconv.Atoi(splitData[0])
+	steps, err := strconv.Atoi(strings.TrimSpace(splitData[0]))
 	if err != nil {
-		return 0, "", 0, fmt.Errorf("")
+		return 0, "", 0, fmt.Errorf("ошибка при преобразовании количества шагов: %v", err)
 	}
 
 	if steps <= 0 {
-		return 0, "", 0, fmt.Errorf("")
+		return 0, "", 0, fmt.Errorf("количество шагов должно быть положительным")
 	}
 
 	activity := strings.TrimSpace(splitData[1])
 
-	duration, err := time.ParseDuration(splitData[2])
-	if err != nil || duration <= 0 {
-		return 0, "", 0, fmt.Errorf("")
+	duration, err := time.ParseDuration(strings.TrimSpace(splitData[2]))
+	if err != nil {
+		return 0, "", 0, fmt.Errorf("ошибка при преобразовании строки в duration: %v", err)
 	}
+
+	if duration <= 0 {
+		return 0, "", 0, fmt.Errorf("длительность должна быть положительной")
+	}
+
 	return steps, activity, duration, nil
 }
+
 func distance(steps int, height float64) float64 {
 	stepLength := stepLengthCoefficient * height
 	stepDistance := (float64(steps) * stepLength) / float64(mInKm)
@@ -86,7 +92,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
-		return 0, fmt.Errorf("")
+		return 0, fmt.Errorf("некорректные параметры")
 	}
 	speed := meanSpeed(steps, height, duration)
 	durationMin := duration.Minutes()
@@ -96,7 +102,7 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
-		return 0, fmt.Errorf("")
+		return 0, fmt.Errorf("некорректные параметры")
 	}
 	speed := meanSpeed(steps, height, duration)
 	durationMin := duration.Minutes()
